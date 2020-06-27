@@ -15,8 +15,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.example.rest.dao.MarcaModel;
+import com.example.rest.dao.OpcionModel;
 import com.example.rest.dao.UsuarioModel;
 import com.example.rest.entidades.Marca;
+import com.example.rest.entidades.Opcion;
 import com.example.rest.entidades.Usuario;
 
 @Path("/servicios")
@@ -26,7 +28,8 @@ public class ServicioRest {
 	private static final Log log = LogFactory.getLog(ServicioRest.class);
 	private UsuarioModel daoUser = new UsuarioModel();
 	private MarcaModel daoMarca = new MarcaModel();
-	
+	private OpcionModel daoOpcion = new OpcionModel();
+
 	@GET
 	@Path("/login")
 	public Response login(Usuario obj) {
@@ -40,7 +43,8 @@ public class ServicioRest {
 		log.info("listar usuario rest ");
 		return Response.ok(daoUser.listarTodos()).build();
 	}
-	
+
+	// Crud de Marca
 	@GET
 	@Path("/marca")
 	public Response listarMarcaTodos() {
@@ -73,6 +77,44 @@ public class ServicioRest {
 	public Response eliminaMarca(@PathParam("idMarca") int id) {
 		log.info("Elimina usuario " + id);
 		if (daoMarca.eliminaMarca(id) > 0)
+			return Response.ok().build();
+		else
+			return Response.notModified().build();
+	}
+
+	// Crud de Opcion
+	@GET
+	@Path("/opcion")
+	public Response listarOpcionTodos() {
+		log.info("listars opcion rest ");
+		return Response.ok(daoOpcion.listarOpcionTodos()).build();
+	}
+
+	@POST
+	@Path("/opcion")
+	public Response registraOpcion(Opcion obj) {
+		log.info("Registra opcion " + obj.getIdOpcion());
+		if (daoOpcion.insertaOpcion(obj) > 0)
+			return Response.ok().build();
+		else
+			return Response.notModified().build();
+	}
+
+	@PUT
+	@Path("/opcion")
+	public Response atualizaOpcion(Opcion obj) {
+		log.info("Actualiza opcion " + obj.getIdOpcion());
+		if (daoOpcion.actualizaOpcion(obj) > 0)
+			return Response.ok().build();
+		else
+			return Response.notModified().build();
+	}
+
+	@DELETE
+	@Path("/opcion/{idOpcion}")
+	public Response eliminaOpcion(@PathParam("idOpcion") int id) {
+		log.info("Elimina opcion " + id);
+		if (daoOpcion.eliminaOpcion(id) > 0)
 			return Response.ok().build();
 		else
 			return Response.notModified().build();

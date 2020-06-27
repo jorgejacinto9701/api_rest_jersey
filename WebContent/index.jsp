@@ -1,3 +1,3 @@
 <% 
-response.sendRedirect("./rest/servicios/usuario");
+response.sendRedirect("./rest/servicios/opcion");
 %>

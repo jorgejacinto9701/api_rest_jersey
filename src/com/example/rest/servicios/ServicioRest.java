@@ -16,9 +16,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.example.rest.dao.MarcaModel;
 import com.example.rest.dao.OpcionModel;
+import com.example.rest.dao.RolModel;
 import com.example.rest.dao.UsuarioModel;
 import com.example.rest.entidades.Marca;
 import com.example.rest.entidades.Opcion;
+import com.example.rest.entidades.Rol;
 import com.example.rest.entidades.Usuario;
 
 @Path("/servicios")
@@ -29,7 +31,8 @@ public class ServicioRest {
 	private UsuarioModel daoUser = new UsuarioModel();
 	private MarcaModel daoMarca = new MarcaModel();
 	private OpcionModel daoOpcion = new OpcionModel();
-
+	private RolModel daoRol = new RolModel();
+	
 	@GET
 	@Path("/login")
 	public Response login(Usuario obj) {
@@ -119,4 +122,43 @@ public class ServicioRest {
 		else
 			return Response.notModified().build();
 	}
+	
+	
+	// Crud de Rol
+		@GET
+		@Path("/rol")
+		public Response listarRolTodos() {
+			log.info("listars rol rest ");
+			return Response.ok(daoRol.listarRolTodos()).build();
+		}
+
+		@POST
+		@Path("/rol")
+		public Response registraRol(Rol obj) {
+			log.info("Registra rol " + obj.getIdRol());
+			if (daoRol.insertaRol(obj) > 0)
+				return Response.ok().build();
+			else
+				return Response.notModified().build();
+		}
+
+		@PUT
+		@Path("/rol")
+		public Response atualizaRol(Rol obj) {
+			log.info("Actualiza rol " + obj.getIdRol());
+			if (daoRol.actualizaRol(obj) > 0)
+				return Response.ok().build();
+			else
+				return Response.notModified().build();
+		}
+
+		@DELETE
+		@Path("/rol/{idRol}")
+		public Response eliminaRol(@PathParam("idRol") int id) {
+			log.info("Elimina rol " + id);
+			if (daoRol.eliminaRol(id) > 0)
+				return Response.ok().build();
+			else
+				return Response.notModified().build();
+		}
 }

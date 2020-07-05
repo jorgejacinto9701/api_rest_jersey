@@ -7,33 +7,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.rest.entidades.Marca;
+import com.example.rest.entidades.Ubigeo;
 import com.example.rest.util.MySqlDBConexion;
 
 import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
-public class MarcaModel {
+public class UbigeoModel {
 
-	public List<Marca> listarMarcaTodos() {
+	public List<String> listarDepartamentos() {
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 
-		List<Marca> lista = new ArrayList<Marca>();
+		List<String> lista = new ArrayList<String>();
 		try {
-			String sql = "select * from marca";
+			String sql = "select distinct (departamento) from ubigeo";
 			conn = MySqlDBConexion.getConexion();
 			pstm = conn.prepareStatement(sql);
 			log.info(pstm);
 			rs = pstm.executeQuery();
-			Marca bean = null;
 			while (rs.next()) {
-				bean = new Marca();
-				bean.setIdMarca(rs.getInt(1));
-				bean.setNombre(rs.getString(2));
-				bean.setEstado(rs.getString(3));
-				lista.add(bean);
+				lista.add(rs.getString(1));
 			}
 		} catch (Exception e) {
 			log.info(e);
@@ -51,22 +46,28 @@ public class MarcaModel {
 		return lista;
 	}
 
-	public int insertaMarca(Marca obj) {
+	public List<String> listarProvincia(Ubigeo obj) {
 		Connection conn = null;
 		PreparedStatement pstm = null;
-		int salida = -1;
+		ResultSet rs = null;
+
+		List<String> lista = new ArrayList<String>();
 		try {
-			String sql = "insert into marca values(null,?,?)";
+			String sql = "select distinct (provincia) from ubigeo where departamento=?";
 			conn = MySqlDBConexion.getConexion();
 			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, obj.getNombre());
-			pstm.setString(2, obj.getEstado());
+			pstm.setString(1, obj.getDepartamento());
 			log.info(pstm);
-			salida = pstm.executeUpdate();
+			rs = pstm.executeQuery();
+			while (rs.next()) {
+				lista.add(rs.getString(1));
+			}
 		} catch (Exception e) {
 			log.info(e);
 		} finally {
 			try {
+				if (rs != null)
+					rs.close();
 				if (pstm != null)
 					pstm.close();
 				if (conn != null)
@@ -74,27 +75,36 @@ public class MarcaModel {
 			} catch (SQLException e) {
 			}
 		}
-		return salida;
+		return lista;
 	}
 
-	public int actualizaMarca(Marca obj) {
+	public List<Ubigeo> listarDistrito(Ubigeo obj) {
 		Connection conn = null;
 		PreparedStatement pstm = null;
-		int salida = -1;
+		ResultSet rs = null;
+
+		List<Ubigeo> lista = new ArrayList<Ubigeo>();
 		try {
-			String sql = "update marca set nombre =?, estado =? where idmarca =? ";
+			String sql = "select idubigeo, distrito from ubigeo where departamento=? and provincia=?";
 			conn = MySqlDBConexion.getConexion();
 			pstm = conn.prepareStatement(sql);
-			pstm.setString(1, obj.getNombre());
-			pstm.setString(2, obj.getEstado());
-			pstm.setInt(3, obj.getIdMarca());
+			pstm.setString(1, obj.getDepartamento());
+			pstm.setString(2, obj.getProvincia());
 			log.info(pstm);
-
-			salida = pstm.executeUpdate();
+			rs = pstm.executeQuery();
+			Ubigeo aux = null;
+			while (rs.next()) {
+				aux = new Ubigeo();
+				aux.setIdUbigeo(rs.getInt(1));
+				aux.setDistrito(rs.getString(2));
+				lista.add(aux);
+			}
 		} catch (Exception e) {
 			log.info(e);
 		} finally {
 			try {
+				if (rs != null)
+					rs.close();
 				if (pstm != null)
 					pstm.close();
 				if (conn != null)
@@ -102,32 +112,7 @@ public class MarcaModel {
 			} catch (SQLException e) {
 			}
 		}
-		return salida;
-	}
-
-	public int eliminaMarca(int id) {
-		Connection conn = null;
-		PreparedStatement pstm = null;
-		int salida = -1;
-		try {
-			String sql = "delete from marca where idmarca =?";
-			conn = MySqlDBConexion.getConexion();
-			pstm = conn.prepareStatement(sql);
-			pstm.setInt(1, id);
-			log.info(pstm);
-			salida = pstm.executeUpdate();
-		} catch (Exception e) {
-			log.info(e);
-		} finally {
-			try {
-				if (pstm != null)
-					pstm.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-			}
-		}
-		return salida;
+		return lista;
 	}
 
 }

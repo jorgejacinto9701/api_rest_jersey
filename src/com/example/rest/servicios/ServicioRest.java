@@ -15,12 +15,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.example.rest.dao.MarcaModel;
-import com.example.rest.dao.OpcionModel;
-import com.example.rest.dao.RolModel;
+import com.example.rest.dao.UbigeoModel;
 import com.example.rest.dao.UsuarioModel;
 import com.example.rest.entidades.Marca;
-import com.example.rest.entidades.Opcion;
-import com.example.rest.entidades.Rol;
+import com.example.rest.entidades.Ubigeo;
 import com.example.rest.entidades.Usuario;
 
 @Path("/servicios")
@@ -30,9 +28,9 @@ public class ServicioRest {
 	private static final Log log = LogFactory.getLog(ServicioRest.class);
 	private UsuarioModel daoUser = new UsuarioModel();
 	private MarcaModel daoMarca = new MarcaModel();
-	private OpcionModel daoOpcion = new OpcionModel();
-	private RolModel daoRol = new RolModel();
+	private UbigeoModel daoUbigeo = new UbigeoModel();
 	
+
 	@GET
 	@Path("/login")
 	public Response login(Usuario obj) {
@@ -47,7 +45,10 @@ public class ServicioRest {
 		return Response.ok(daoUser.listarTodos()).build();
 	}
 
-	// Crud de Marca
+	//-----------------------------------------------
+	// Marca
+	//-----------------------------------------------
+	
 	@GET
 	@Path("/marca")
 	public Response listarMarcaTodos() {
@@ -85,80 +86,30 @@ public class ServicioRest {
 			return Response.notModified().build();
 	}
 
-	// Crud de Opcion
+	
+	//-----------------------------------------------
+	// Ubigeo
+	//-----------------------------------------------
+	
 	@GET
-	@Path("/opcion")
-	public Response listarOpcionTodos() {
-		log.info("listars opcion rest ");
-		return Response.ok(daoOpcion.listarOpcionTodos()).build();
+	@Path("/ubigeo/departamentos")
+	public Response listarDepartamentos() {
+		log.info("listar departamentos");
+		return Response.ok(daoUbigeo.listarDepartamentos()).build();
 	}
-
-	@POST
-	@Path("/opcion")
-	public Response registraOpcion(Opcion obj) {
-		log.info("Registra opcion " + obj.getIdOpcion());
-		if (daoOpcion.insertaOpcion(obj) > 0)
-			return Response.ok().build();
-		else
-			return Response.notModified().build();
-	}
-
-	@PUT
-	@Path("/opcion")
-	public Response atualizaOpcion(Opcion obj) {
-		log.info("Actualiza opcion " + obj.getIdOpcion());
-		if (daoOpcion.actualizaOpcion(obj) > 0)
-			return Response.ok().build();
-		else
-			return Response.notModified().build();
-	}
-
-	@DELETE
-	@Path("/opcion/{idOpcion}")
-	public Response eliminaOpcion(@PathParam("idOpcion") int id) {
-		log.info("Elimina opcion " + id);
-		if (daoOpcion.eliminaOpcion(id) > 0)
-			return Response.ok().build();
-		else
-			return Response.notModified().build();
+	
+	@GET
+	@Path("/ubigeo/provincias")
+	public Response listarProvincias(Ubigeo obj) {
+		log.info("listar provincias");
+		return Response.ok(daoUbigeo.listarProvincia(obj)).build();
 	}
 	
 	
-	// Crud de Rol
-		@GET
-		@Path("/rol")
-		public Response listarRolTodos() {
-			log.info("listars rol rest ");
-			return Response.ok(daoRol.listarRolTodos()).build();
-		}
-
-		@POST
-		@Path("/rol")
-		public Response registraRol(Rol obj) {
-			log.info("Registra rol " + obj.getIdRol());
-			if (daoRol.insertaRol(obj) > 0)
-				return Response.ok().build();
-			else
-				return Response.notModified().build();
-		}
-
-		@PUT
-		@Path("/rol")
-		public Response atualizaRol(Rol obj) {
-			log.info("Actualiza rol " + obj.getIdRol());
-			if (daoRol.actualizaRol(obj) > 0)
-				return Response.ok().build();
-			else
-				return Response.notModified().build();
-		}
-
-		@DELETE
-		@Path("/rol/{idRol}")
-		public Response eliminaRol(@PathParam("idRol") int id) {
-			log.info("Elimina rol " + id);
-			if (daoRol.eliminaRol(id) > 0)
-				return Response.ok().build();
-			else
-				return Response.notModified().build();
-		}
+	@GET
+	@Path("/ubigeo/distritos")
+	public Response listarDistritos(Ubigeo obj) {
+		log.info("listar Provincias");
+		return Response.ok(daoUbigeo.listarDistrito(obj)).build();
+	}
 }

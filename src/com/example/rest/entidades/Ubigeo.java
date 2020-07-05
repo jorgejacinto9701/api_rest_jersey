@@ -7,11 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Marca {
+public class Ubigeo {
 
-	private int idMarca;
-	private String nombre;
-	private String estado;
-	
+	private int idUbigeo;
+	private String departamento;
+	private String provincia;
+	private String distrito;
+
 	
 }

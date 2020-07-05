@@ -7,15 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.example.rest.entidades.Usuario;
 import com.example.rest.util.MySqlDBConexion;
 
-public class UsuarioModel {
+import lombok.extern.apachecommons.CommonsLog;
 
-	private static final Log log = LogFactory.getLog(UsuarioModel.class);
+@CommonsLog
+public class UsuarioModel {
 
 	public Usuario login(Usuario bean) {
 		Connection conn = null;
@@ -43,9 +41,12 @@ public class UsuarioModel {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null)	  rs.close();
-				if (pstm != null) pstm.close();
-				if (conn != null) conn.close();
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (conn != null)
+					conn.close();
 			} catch (Exception e2) {
 			}
 		}
@@ -56,7 +57,7 @@ public class UsuarioModel {
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
-		
+
 		List<Usuario> lista = new ArrayList<Usuario>();
 		try {
 			String sql = "select * from usuario";
@@ -79,10 +80,14 @@ public class UsuarioModel {
 			log.info(e);
 		} finally {
 			try {
-				if (rs != null)rs.close();
-				if (pstm != null)pstm.close();
-				if (conn != null)conn.close();
-			} catch (SQLException e) {}
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+			}
 		}
 		return lista;
 	}

@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import lombok.extern.apachecommons.CommonsLog;
+
+@CommonsLog
 public class MySqlDBConexion {
 	private static ResourceBundle rb = ResourceBundle.getBundle("database", Locale.getDefault());
 
@@ -17,8 +20,6 @@ public class MySqlDBConexion {
 		}
 	}
 
-
-	
 	public static Connection getConexion() {
 		Connection salida = null;
 		try {
@@ -27,7 +28,7 @@ public class MySqlDBConexion {
 					rb.getString("username"),
 					rb.getString("password"));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.info(e.getMessage());
 		}
 		return salida;
 	}

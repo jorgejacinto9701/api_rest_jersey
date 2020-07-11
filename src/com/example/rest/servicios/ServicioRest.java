@@ -99,17 +99,22 @@ public class ServicioRest {
 	}
 	
 	@GET
-	@Path("/ubigeo/provincias")
-	public Response listarProvincias(Ubigeo obj) {
+	@Path("/ubigeo/provincias/{idDepa}")
+	public Response listarProvincias(@PathParam("idDepa") String idDepa) {
 		log.info("listar provincias");
+		Ubigeo obj = new Ubigeo();
+		obj.setDepartamento(idDepa);
 		return Response.ok(daoUbigeo.listarProvincia(obj)).build();
 	}
 	
 	
 	@GET
-	@Path("/ubigeo/distritos")
-	public Response listarDistritos(Ubigeo obj) {
-		log.info("listar Provincias");
+	@Path("/ubigeo/distritos/{idDepa}/{idPro}")
+	public Response listarDistritos(@PathParam("idDepa") String idDepa,@PathParam("idPro") String idPro) {
+		log.info("listar Distritos");
+		Ubigeo obj = new Ubigeo();
+		obj.setDepartamento(idDepa);
+		obj.setProvincia(idPro);
 		return Response.ok(daoUbigeo.listarDistrito(obj)).build();
 	}
 }

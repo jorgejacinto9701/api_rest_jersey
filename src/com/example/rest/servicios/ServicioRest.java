@@ -11,9 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.example.rest.dao.MarcaModel;
 import com.example.rest.dao.UbigeoModel;
 import com.example.rest.dao.UsuarioModel;
@@ -21,11 +18,14 @@ import com.example.rest.entidades.Marca;
 import com.example.rest.entidades.Ubigeo;
 import com.example.rest.entidades.Usuario;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 @Path("/servicios")
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
+@CommonsLog
 public class ServicioRest {
-	private static final Log log = LogFactory.getLog(ServicioRest.class);
+	
 	private UsuarioModel daoUser = new UsuarioModel();
 	private MarcaModel daoMarca = new MarcaModel();
 	private UbigeoModel daoUbigeo = new UbigeoModel();

@@ -110,7 +110,7 @@ public class ServicioRest {
 	
 	@GET
 	@Path("/distritos/{depa}/{pro}")
-	public Response listarDistritos(@PathParam("depa") String idDepa,@PathParam("idPro") String idPro) {
+	public Response listarDistritos(@PathParam("depa") String idDepa,@PathParam("pro") String idPro) {
 		log.info("listar Distritos");
 		Ubigeo obj = new Ubigeo();
 		obj.setDepartamento(idDepa);

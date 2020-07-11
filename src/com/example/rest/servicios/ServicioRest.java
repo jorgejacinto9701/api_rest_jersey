@@ -99,8 +99,8 @@ public class ServicioRest {
 	}
 	
 	@GET
-	@Path("/provincias/{idDepa}")
-	public Response listarProvincias(@PathParam("idDepa") String idDepa) {
+	@Path("/provincias/{depa}")
+	public Response listarProvincias(@PathParam("depa") String idDepa) {
 		log.info("listar provincias");
 		Ubigeo obj = new Ubigeo();
 		obj.setDepartamento(idDepa);
@@ -109,8 +109,8 @@ public class ServicioRest {
 	
 	
 	@GET
-	@Path("/distritos/{idDepa}/{idPro}")
-	public Response listarDistritos(@PathParam("idDepa") String idDepa,@PathParam("idPro") String idPro) {
+	@Path("/distritos/{depa}/{pro}")
+	public Response listarDistritos(@PathParam("depa") String idDepa,@PathParam("idPro") String idPro) {
 		log.info("listar Distritos");
 		Ubigeo obj = new Ubigeo();
 		obj.setDepartamento(idDepa);

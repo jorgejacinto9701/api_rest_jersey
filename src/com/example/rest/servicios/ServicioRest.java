@@ -112,6 +112,14 @@ public class ServicioRest {
 		log.info("listars marca rest ");
 		return Response.ok(daoPedido.listaPedido()).build();
 	}
+	
+	@GET
+	@Path("/listaPedido/{pedido}")
+	public Response listaPedido(@PathParam("pedido") int idDepa) {
+		log.info("listars marca rest ");
+		return Response.ok(daoPedido.listaPedidoPorId(idDepa)).build();
+	}
+	
 
 	@GET
 	@Path("/departamentos")

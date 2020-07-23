@@ -81,6 +81,65 @@ public class PedidoModel {
 		return contador;
 	}
 	
+	public ArrayList<Pedido> listaPedidoPorId(int idPedido){
+		ArrayList<Pedido> lista = new  ArrayList<Pedido>();
+		
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		
+		try {
+			//1 Se realiza la conexión a la bd
+			conn = MySqlDBConexion.getConexion();
+			
+			//2 Se prepara el SQL
+			String sql = "select c.idcliente,c.nombres,p.idpedido,p.fechaRegistro,"
+					+ "p.fechaEntrega,p.lugarEntrega,p.estado,u.idubigeo from pedido p join cliente c \r\n" + 
+					"on p.idcliente=c.idcliente join ubigeo u on p.idubigeo=u.idubigeo where p.idpedido = ?";
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, idPedido);
+			log.info(pstm);
+			
+			//3 se ejecuta el sql en la BD
+			rs = pstm.executeQuery();
+			
+			//4 se pasa los datos del RS al ArrayList
+			Pedido obj = null;
+			Ubigeo objUbi = null;
+			Cliente objCli = null;
+			while(rs.next()) {
+				objCli = new Cliente();
+				objCli.setIdCliente(rs.getInt(1));
+				objCli.setNombres(rs.getString(2));
+				
+				objUbi = new Ubigeo();
+				objUbi.setIdUbigeo(rs.getInt(8));
+				
+				obj = new Pedido();
+				obj.setCliente(objCli);
+				obj.setIdPedido(rs.getInt(3));
+				obj.setFechaRegistro(rs.getDate(4));
+				obj.setFechaEntrega(rs.getDate(5));
+				obj.setLugarEntrega(rs.getString(6));
+				obj.setEstado(rs.getString(7));
+				obj.setUbigeo(objUbi);
+				
+				lista.add(obj);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstm != null) pstm.close();
+				if (conn != null) conn.close(); 
+			} catch (Exception e2) {}
+		}
+		
+		return lista;
+	}
+	
+	
 	public ArrayList<Pedido> listaPedido(){
 		ArrayList<Pedido> lista = new  ArrayList<Pedido>();
 		

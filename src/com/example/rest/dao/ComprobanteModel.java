@@ -76,6 +76,8 @@ public class ComprobanteModel {
 		return lista;
 	}
 	
+	
+	
 	public ArrayList<Comprobante> listaComprobantexCliente(int idCliente){
 		ArrayList<Comprobante> lista = new  ArrayList<Comprobante>();
 		
@@ -133,6 +135,7 @@ public class ComprobanteModel {
 		
 		return lista;
 	}
+	
 	public int inserta(Comprobante comp) {
 		log.info("---> En MySqlComprobante-> inserta");
 

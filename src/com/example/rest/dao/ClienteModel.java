@@ -47,7 +47,8 @@ public class ClienteModel {
 
 				beanUbigeo = new Ubigeo();
 				beanUbigeo.setIdUbigeo(rs.getInt(11));
-
+				bean.setUbigeo(beanUbigeo);
+				
 				lista.add(bean);
 			}
 		} catch (Exception e) {
@@ -95,7 +96,8 @@ public class ClienteModel {
 
 				beanUbigeo = new Ubigeo();
 				beanUbigeo.setIdUbigeo(rs.getInt(11));
-
+				bean.setUbigeo(beanUbigeo);
+				
 				lista.add(bean);
 			}
 		} catch (Exception e) {

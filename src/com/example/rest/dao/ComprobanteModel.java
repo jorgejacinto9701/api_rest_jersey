@@ -10,146 +10,266 @@ import com.example.rest.entidades.Cliente;
 import com.example.rest.entidades.Comprobante;
 import com.example.rest.entidades.ComprobanteDetalle;
 import com.example.rest.entidades.Pedido;
-import com.example.rest.entidades.PedidoDetalle;
-import com.example.rest.entidades.Producto;
 import com.example.rest.util.MySqlDBConexion;
 
 import lombok.extern.apachecommons.CommonsLog;
+
 @CommonsLog
 public class ComprobanteModel {
 
-	
-	public ArrayList<Comprobante> listaComprobante(){
-		ArrayList<Comprobante> lista = new  ArrayList<Comprobante>();
-		
+	public ArrayList<Comprobante> listaComprobante() {
+		log.info("---> En ComprobanteModel -> listaComprobante");
+
+		ArrayList<Comprobante> lista = new ArrayList<Comprobante>();
+
 		Connection conn = null;
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		
+		PreparedStatement pstm = null, pstm1 = null;
+		;
+		ResultSet rs = null, rs1 = null;
+		ArrayList<ComprobanteDetalle> listaDetalle = null;
+
 		try {
-			//1 Se realiza la conexión a la bd
 			conn = MySqlDBConexion.getConexion();
-			
-			//2 Se prepara el SQL
-			String sql = "select c.idcliente,c.nombres,o.idcomprobante,o.fechaRegistro,o.fechaPago,o.estado,o.idpedido \r\n" + 
-						"from cliente c join pedido p on c.idcliente=p.idcliente join comprobante o \r\n" +
-						"on c.idcliente=o.idcliente";
-					
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente ";
 			pstm = conn.prepareStatement(sql);
 			log.info(pstm);
-			
-			//3 se ejecuta el sql en la BD
 			rs = pstm.executeQuery();
-			
-			//4 se pasa los datos del RS al ArrayList
+
+			String sql1 = "SELECT * FROM comprobante_has_producto where idcomprobante=?";
+			pstm1 = conn.prepareStatement(sql1);
+
 			Pedido obj = null;
 			Comprobante objComp = null;
+			ComprobanteDetalle objDetalle = null;
 			Cliente objCli = null;
-			while(rs.next()) {
+			while (rs.next()) {
 				objCli = new Cliente();
 				objCli.setIdCliente(rs.getInt(1));
 				objCli.setNombres(rs.getString(2));
-				
+				objCli.setApellidos(rs.getString(3));
+
 				obj = new Pedido();
-				obj.setIdPedido(rs.getInt(7));
-				
+				obj.setIdPedido(rs.getInt(8));
+
 				objComp = new Comprobante();
 				objComp.setCliente(objCli);
-				objComp.setIdComprobante(rs.getInt(3));
-				objComp.setFechaRegistro(rs.getDate(4));
-				objComp.setFechaPago(rs.getDate(5));
-				objComp.setEstado(rs.getString(6));
+				objComp.setIdComprobante(rs.getInt(4));
+				objComp.setFechaRegistro(rs.getDate(5));
+				objComp.setFechaPago(rs.getDate(6));
+				objComp.setEstado(rs.getString(7));
 				objComp.setPedido(obj);
-				
+
+				pstm1.setInt(1, rs.getInt(4));
+				log.info(pstm1);
+				rs1 = pstm1.executeQuery();
+
+				listaDetalle = new ArrayList<ComprobanteDetalle>();
+				while (rs1.next()) {
+					objDetalle = new ComprobanteDetalle();
+					objDetalle.setIdComprobante(rs1.getInt(1));
+					objDetalle.setIdProducto(rs1.getInt(2));
+					objDetalle.setPrecio(rs1.getDouble(3));
+					objDetalle.setCantidad(rs1.getInt(4));
+					listaDetalle.add(objDetalle);
+					objComp.setDetalles(listaDetalle);
+				}
+
 				lista.add(objComp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null) rs.close();
-				if (pstm != null) pstm.close();
-				if (conn != null) conn.close(); 
-			} catch (Exception e2) {}
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (rs1 != null)
+					rs1.close();
+				if (pstm1 != null)
+					pstm1.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e2) {
+			}
 		}
-		
+
 		return lista;
 	}
-	
-	
-	
-	public ArrayList<Comprobante> listaComprobantexCliente(int idCliente){
-		ArrayList<Comprobante> lista = new  ArrayList<Comprobante>();
-		
+
+	public ArrayList<Comprobante> listaComprobantePorCliente(int idCliente) {
+		log.info("---> En ComprobanteModel -> listaComprobantexCliente");
+
+		ArrayList<Comprobante> lista = new ArrayList<Comprobante>();
+
 		Connection conn = null;
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		
+		PreparedStatement pstm = null, pstm1 = null;
+		;
+		ResultSet rs = null, rs1 = null;
+		ArrayList<ComprobanteDetalle> listaDetalle = null;
+
 		try {
-			//1 Se realiza la conexión a la bd
 			conn = MySqlDBConexion.getConexion();
-			
-			//2 Se prepara el SQL
-			String sql = "select distinct c.idcliente,c.nombres,o.idcomprobante,o.fechaRegistro,o.fechaPago,o.estado,o.idpedido \r\n" + 
-					"from cliente c join pedido p on c.idcliente=p.idcliente join comprobante o \r\n" +
-					"on c.idcliente=o.idcliente where c.idcliente=?";
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente where c.idcliente = ?";
 			pstm = conn.prepareStatement(sql);
 			pstm.setInt(1, idCliente);
-	
 			log.info(pstm);
-			
-			//3 se ejecuta el sql en la BD
 			rs = pstm.executeQuery();
-			
-			//4 se pasa los datos del RS al ArrayList
+
+			String sql1 = "SELECT * FROM comprobante_has_producto where idcomprobante=?";
+			pstm1 = conn.prepareStatement(sql1);
+
 			Pedido obj = null;
 			Comprobante objComp = null;
+			ComprobanteDetalle objDetalle = null;
 			Cliente objCli = null;
-			while(rs.next()) {
+			while (rs.next()) {
 				objCli = new Cliente();
 				objCli.setIdCliente(rs.getInt(1));
 				objCli.setNombres(rs.getString(2));
-				
+				objCli.setApellidos(rs.getString(3));
+
 				obj = new Pedido();
-				obj.setIdPedido(rs.getInt(7));
-				
+				obj.setIdPedido(rs.getInt(8));
+
 				objComp = new Comprobante();
 				objComp.setCliente(objCli);
-				objComp.setIdComprobante(rs.getInt(3));
-				objComp.setFechaRegistro(rs.getDate(4));
-				objComp.setFechaPago(rs.getDate(5));
-				objComp.setEstado(rs.getString(6));
+				objComp.setIdComprobante(rs.getInt(4));
+				objComp.setFechaRegistro(rs.getDate(5));
+				objComp.setFechaPago(rs.getDate(6));
+				objComp.setEstado(rs.getString(7));
 				objComp.setPedido(obj);
-				
+
+				pstm1.setInt(1, rs.getInt(4));
+				log.info(pstm1);
+				rs1 = pstm1.executeQuery();
+
+				listaDetalle = new ArrayList<ComprobanteDetalle>();
+				while (rs1.next()) {
+					objDetalle = new ComprobanteDetalle();
+					objDetalle.setIdComprobante(rs1.getInt(1));
+					objDetalle.setIdProducto(rs1.getInt(2));
+					objDetalle.setPrecio(rs1.getDouble(3));
+					objDetalle.setCantidad(rs1.getInt(4));
+					listaDetalle.add(objDetalle);
+					objComp.setDetalles(listaDetalle);
+				}
+
 				lista.add(objComp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null) rs.close();
-				if (pstm != null) pstm.close();
-				if (conn != null) conn.close(); 
-			} catch (Exception e2) {}
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (rs1 != null)
+					rs1.close();
+				if (pstm1 != null)
+					pstm1.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e2) {
+			}
 		}
-		
+
 		return lista;
 	}
-	
+
+	public ArrayList<Comprobante> listaComprobantePorId(int idcomprobante) {
+		log.info("---> En ComprobanteModel -> listaComprobantePorId");
+
+		ArrayList<Comprobante> lista = new ArrayList<Comprobante>();
+
+		Connection conn = null;
+		PreparedStatement pstm = null, pstm1 = null;
+		;
+		ResultSet rs = null, rs1 = null;
+		ArrayList<ComprobanteDetalle> listaDetalle = null;
+
+		try {
+			conn = MySqlDBConexion.getConexion();
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente where p.idcomprobante = ?";
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, idcomprobante);
+			log.info(pstm);
+			rs = pstm.executeQuery();
+
+			String sql1 = "SELECT * FROM comprobante_has_producto where idcomprobante=?";
+			pstm1 = conn.prepareStatement(sql1);
+
+			Pedido obj = null;
+			Comprobante objComp = null;
+			ComprobanteDetalle objDetalle = null;
+			Cliente objCli = null;
+			while (rs.next()) {
+				objCli = new Cliente();
+				objCli.setIdCliente(rs.getInt(1));
+				objCli.setNombres(rs.getString(2));
+				objCli.setApellidos(rs.getString(3));
+
+				obj = new Pedido();
+				obj.setIdPedido(rs.getInt(8));
+
+				objComp = new Comprobante();
+				objComp.setCliente(objCli);
+				objComp.setIdComprobante(rs.getInt(4));
+				objComp.setFechaRegistro(rs.getDate(5));
+				objComp.setFechaPago(rs.getDate(6));
+				objComp.setEstado(rs.getString(7));
+				objComp.setPedido(obj);
+
+				pstm1.setInt(1, rs.getInt(4));
+				log.info(pstm1);
+				rs1 = pstm1.executeQuery();
+
+				listaDetalle = new ArrayList<ComprobanteDetalle>();
+				while (rs1.next()) {
+					objDetalle = new ComprobanteDetalle();
+					objDetalle.setIdComprobante(rs1.getInt(1));
+					objDetalle.setIdProducto(rs1.getInt(2));
+					objDetalle.setPrecio(rs1.getDouble(3));
+					objDetalle.setCantidad(rs1.getInt(4));
+					listaDetalle.add(objDetalle);
+					objComp.setDetalles(listaDetalle);
+				}
+
+				lista.add(objComp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstm != null)
+					pstm.close();
+				if (rs1 != null)
+					rs1.close();
+				if (pstm1 != null)
+					pstm1.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e2) {
+			}
+		}
+
+		return lista;
+	}
+
 	public int inserta(Comprobante comp) {
 		log.info("---> En MySqlComprobante-> inserta");
 
-		
 		int contador = -1;
 		Connection conn = null;
 		PreparedStatement pstm1 = null, pstm2 = null, pstm3 = null;
 
 		try {
 			conn = MySqlDBConexion.getConexion();
-			
 			conn.setAutoCommit(false);
 
-			// se crea el sql de la cabecera
 			String sql1 = "insert into comprobante values(null,curtime(),?,'PAGADOS',?,?,?)";
 			pstm1 = conn.prepareStatement(sql1);
 			pstm1.setDate(1, comp.getFechaPago());
@@ -158,16 +278,13 @@ public class ComprobanteModel {
 			pstm1.setInt(4, comp.getUsuario().getIdUsuario());
 			pstm1.executeUpdate();
 			log.info(pstm1);
-			
-			// se obtiene el idBoleta insertado
+
 			String sql2 = "select max(idComprobante) from comprobante";
 			pstm2 = conn.prepareStatement(sql2);
 			log.info(pstm2);
 			ResultSet rs = pstm2.executeQuery();
 			rs.next();
 			int idComprobante = rs.getInt(1);
-
-			// se inserta el detalle de comprobante
 			String sql3 = "insert into comprobante_has_producto values(?,?,?,?)";
 			pstm3 = conn.prepareStatement(sql3);
 			for (ComprobanteDetalle aux : comp.getDetalles()) {
@@ -178,14 +295,10 @@ public class ComprobanteModel {
 				pstm3.executeUpdate();
 				log.info(pstm3);
 			}
-
-			// se ejecuta todos los SQL en la base de datos
 			conn.commit();
 		} catch (Exception e) {
 			try {
 				conn.rollback();
-				// se vuelva a un inicio
-				// No permite un SQL por separado
 			} catch (SQLException e1) {
 			}
 			e.printStackTrace();
@@ -201,52 +314,5 @@ public class ComprobanteModel {
 		}
 		return contador;
 	}
-	public ArrayList<PedidoDetalle> llenartablaProductos(int idPed){
-		ArrayList<PedidoDetalle> lista = new  ArrayList<PedidoDetalle>();
-		
-		Connection conn = null;
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		
-		try {
-			//1 Se realiza la conexión a la bd
-			conn = MySqlDBConexion.getConexion();
-			
-			//2 Se prepara el SQL
-			String sql = "SELECT P.idproducto,PR.nombre,P.precio,P.cantidad from pedido_has_producto P Join producto PR on P.idproducto=PR.idproducto where P.idpedido=?";
-					
-			pstm = conn.prepareStatement(sql);
-			pstm.setInt(1, idPed);
-			log.info(pstm);
-			
-			//3 se ejecuta el sql en la BD
-			rs = pstm.executeQuery();
-			
-			//4 se pasa los datos del RS al ArrayList
-		
-			PedidoDetalle objPedido = null;
-			Producto objProd = null;
-			while(rs.next()) {
-				objProd = new Producto();
-												
-				objPedido = new PedidoDetalle();
-				objPedido.setIdProducto(rs.getInt(1));
-				objProd.setNombre(rs.getString(2));
-				objPedido.setPrecio(rs.getDouble(3));
-				objPedido.setCantidad(rs.getInt(4));		
-				
-				lista.add(objPedido);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstm != null) pstm.close();
-				if (conn != null) conn.close(); 
-			} catch (Exception e2) {}
-		}
-		
-		return lista;
-	}
+
 }

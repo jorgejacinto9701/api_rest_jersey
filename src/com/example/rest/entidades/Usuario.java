@@ -16,11 +16,6 @@ public class Usuario {
 	private String login;
 	private String password;
 	
-	public String getNombreCompleto() {
-		return nombre.concat(" ").concat(apellido);
-	}
-	
-	
 	
 
 }

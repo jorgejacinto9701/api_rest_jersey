@@ -16,7 +16,7 @@ public class Proveedor {
 	private String celular;
 	private String contacto;
 	private String estado;
-	
+
 	
 	
 }

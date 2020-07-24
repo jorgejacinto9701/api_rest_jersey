@@ -63,6 +63,7 @@ public class ComprobanteModel {
 				objComp.setFechaPago(rs.getDate(6));
 				objComp.setEstado(rs.getString(7));
 				objComp.setPedido(obj);
+				objComp.setUsuario(objUsu);
 
 				pstm1.setInt(1, rs.getInt(4));
 				log.info(pstm1);
@@ -149,7 +150,8 @@ public class ComprobanteModel {
 				objComp.setFechaPago(rs.getDate(6));
 				objComp.setEstado(rs.getString(7));
 				objComp.setPedido(obj);
-
+				objComp.setUsuario(objUsu);
+				
 				pstm1.setInt(1, rs.getInt(4));
 				log.info(pstm1);
 				rs1 = pstm1.executeQuery();
@@ -236,7 +238,8 @@ public class ComprobanteModel {
 				objComp.setFechaPago(rs.getDate(6));
 				objComp.setEstado(rs.getString(7));
 				objComp.setPedido(obj);
-
+				objComp.setUsuario(objUsu);
+				
 				pstm1.setInt(1, rs.getInt(4));
 				log.info(pstm1);
 				rs1 = pstm1.executeQuery();

@@ -10,6 +10,7 @@ import com.example.rest.entidades.Cliente;
 import com.example.rest.entidades.Comprobante;
 import com.example.rest.entidades.ComprobanteDetalle;
 import com.example.rest.entidades.Pedido;
+import com.example.rest.entidades.Usuario;
 import com.example.rest.util.MySqlDBConexion;
 
 import lombok.extern.apachecommons.CommonsLog;
@@ -30,7 +31,7 @@ public class ComprobanteModel {
 
 		try {
 			conn = MySqlDBConexion.getConexion();
-			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente ";
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido,p.idusuario from cliente c join comprobante p on c.idcliente=p.idcliente ";
 			pstm = conn.prepareStatement(sql);
 			log.info(pstm);
 			rs = pstm.executeQuery();
@@ -42,6 +43,7 @@ public class ComprobanteModel {
 			Comprobante objComp = null;
 			ComprobanteDetalle objDetalle = null;
 			Cliente objCli = null;
+			Usuario objUsu = null;
 			while (rs.next()) {
 				objCli = new Cliente();
 				objCli.setIdCliente(rs.getInt(1));
@@ -51,6 +53,9 @@ public class ComprobanteModel {
 				obj = new Pedido();
 				obj.setIdPedido(rs.getInt(8));
 
+				objUsu = new Usuario();
+				objUsu.setIdUsuario(rs.getInt(9));
+				
 				objComp = new Comprobante();
 				objComp.setCliente(objCli);
 				objComp.setIdComprobante(rs.getInt(4));
@@ -110,7 +115,7 @@ public class ComprobanteModel {
 
 		try {
 			conn = MySqlDBConexion.getConexion();
-			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente where c.idcliente = ?";
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido,p.idusuario from cliente c join comprobante p on c.idcliente=p.idcliente where c.idcliente = ?";
 			pstm = conn.prepareStatement(sql);
 			pstm.setInt(1, idCliente);
 			log.info(pstm);
@@ -123,6 +128,7 @@ public class ComprobanteModel {
 			Comprobante objComp = null;
 			ComprobanteDetalle objDetalle = null;
 			Cliente objCli = null;
+			Usuario objUsu = null;
 			while (rs.next()) {
 				objCli = new Cliente();
 				objCli.setIdCliente(rs.getInt(1));
@@ -132,6 +138,10 @@ public class ComprobanteModel {
 				obj = new Pedido();
 				obj.setIdPedido(rs.getInt(8));
 
+				objUsu = new Usuario();
+				objUsu.setIdUsuario(rs.getInt(9));
+
+				
 				objComp = new Comprobante();
 				objComp.setCliente(objCli);
 				objComp.setIdComprobante(rs.getInt(4));
@@ -191,7 +201,7 @@ public class ComprobanteModel {
 
 		try {
 			conn = MySqlDBConexion.getConexion();
-			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido from cliente c join comprobante p on c.idcliente=p.idcliente where p.idcomprobante = ?";
+			String sql = "select c.idcliente,c.nombres,c.apellidos,p.idcomprobante,p.fechaRegistro,p.fechaPago,p.estado,p.idpedido,p.idusuario from cliente c join comprobante p on c.idcliente=p.idcliente where p.idcomprobante = ?";
 			pstm = conn.prepareStatement(sql);
 			pstm.setInt(1, idcomprobante);
 			log.info(pstm);
@@ -204,6 +214,7 @@ public class ComprobanteModel {
 			Comprobante objComp = null;
 			ComprobanteDetalle objDetalle = null;
 			Cliente objCli = null;
+			Usuario objUsu = null;
 			while (rs.next()) {
 				objCli = new Cliente();
 				objCli.setIdCliente(rs.getInt(1));
@@ -213,6 +224,11 @@ public class ComprobanteModel {
 				obj = new Pedido();
 				obj.setIdPedido(rs.getInt(8));
 
+				
+				objUsu = new Usuario();
+				objUsu.setIdUsuario(rs.getInt(9));
+				
+				
 				objComp = new Comprobante();
 				objComp.setCliente(objCli);
 				objComp.setIdComprobante(rs.getInt(4));
